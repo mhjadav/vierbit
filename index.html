@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            
+            
+            <div class="row">
+                <div class="col-md-6">
+                  <form action="api/products" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <input type="text" name="name" class="form-control" placeholder="name">
+                    </div>
+                    <div class="form-group">
+                      <input type="text" name="domain_id" class="form-control" placeholder="domain_id">
+                    </div>
+                    <div class="form-group">
+                      <input type="text" name="domain_name" class="form-control" placeholder="domain_name">
+                    </div>
+
+
+                    <div class="form-group">
+                        <input type="text" name="description" class="form-control" placeholder="description">
+                      </div>
+                      <div class="form-group">
+                        <input type="text" name="tags" class="form-control" placeholder="tags">
+                      </div>
+                      <div class="form-group">
+                        <input type="number" name="buying_price" class="form-control" placeholder="buying_price">
+                      </div>
+                      <div class="form-group">
+                        <input type="number" name="selling_price" class="form-control" placeholder="selling_price">
+                      </div>
+                      <div class="form-group">
+                        <input type="text" name="quantity" class="form-control" placeholder="quantity">
+                      </div>
+
+
+
+                    <div class="form-group">
+                      <input type="file" name="images" multiple />
+                    </div>
+                    <button type="submit" class="btn btn-info">upload</button>
+                  </form>
+                </div>
+            </div>
+          </div>
+    </body>
+</html>
