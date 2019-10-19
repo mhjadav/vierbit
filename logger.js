@@ -45,6 +45,7 @@ const logger = createLogger({
     new transports.File({
         filename: filename2,
         level: 'error',
+        handleExceptions: true,
         format: format.combine(
           format.printf(
             info =>
@@ -55,9 +56,9 @@ const logger = createLogger({
   ],
   exceptionHandlers: [
     new transports.Console({ json: false, timestamp: true }),
-    new transports.File({ filename: __dirname + './components/exceptions.log', json: false })
+    new transports.File({ filename: __dirname + './logs/exceptions.log', json: false })
   ],
-  exitOnError: false
+  exitOnError: true
 });
 
 

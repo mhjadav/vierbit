@@ -1,5 +1,6 @@
 
 const ProductService = require('./productsService');
+const logger = require('../../logger');
 // Handle index actions
 exports.index = async function (req, res) {
     await ProductService.getAllProducts().then((products) => {
@@ -8,6 +9,7 @@ exports.index = async function (req, res) {
             data: products
         })
     }).catch((error) => {
+        logger.error(error);
         res.send("Error : " + error.message);
     })
 
@@ -22,6 +24,7 @@ exports.new = async function (req, res) {
             data: product
         })
     }).catch((error) => {
+        logger.error(error);
         res.send("Error : " + error.message);
     })
 
@@ -33,6 +36,7 @@ exports.view = async function (req, res) {
     await ProductService.findProduct(req.params.product_id).then((message) => {
         res.send(message);
     }).catch((error) => {
+        logger.error(error);
         res.send("Error : " + error.message);
     })
 
@@ -46,6 +50,7 @@ exports.update = async function (req, res) {
             data: product
         })
     }).catch((error) => {
+        logger.error(error);
         res.send("Error : " + error.message);
     })
 
@@ -58,6 +63,7 @@ exports.delete = async function (req, res) {
             Message: message
         })
     }).catch((error) => {
+        logger.error(error);
         res.send("Error : " + error.message);
     })
 
