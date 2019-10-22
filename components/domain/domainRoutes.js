@@ -1,9 +1,10 @@
 let router = require('express').Router();
+const authenticateToken = require('../auth/authMiddleware')
 
 var domainController = require('./domainController');
 
 router.route('/domain')
-    .get(domainController.index)
+    .get(authenticateToken, domainController.index)
     .post(domainController.new);
 router.route('/domain/:domain_id')
     .get(domainController.view)

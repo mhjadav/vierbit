@@ -4,7 +4,6 @@ const validator = require('../validation/validate');
 const logger = require("../../logger");
 // Handle index actions
 exports.index = async function (req, res) {
-    logger.error("info.........");
 
     await DomainService.getAllDomain().then((domains) => {
         res.json({

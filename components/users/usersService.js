@@ -1,4 +1,5 @@
-let  UserModel = require('./usersModel');
+let UserModel = require('./usersModel');
+const bcrypt = require('bcrypt')
 
 exports.getAllUsers = function () {
 
@@ -24,19 +25,25 @@ exports.addUser = function (userDetail) {
     user.email = userDetail.email;
     user.phone = userDetail.phone;
     user.role = userDetail.role;
-    user.password = userDetail.password;
+    //user.password = userDetail.password;
     user.isDeactivated = userDetail.isDeactivated ? userDetail.isDeactivated : false;
     user.created_date = Date.now();
 
-    return new Promise(function (resolve, reject) {
-        user.save(function (err) {
 
-            if (!err) {
-                resolve(user);
-            } else {
-                reject(err);
-            }
-        });
+
+    return new Promise(function (resolve, reject) {
+        bcrypt.hash(userDetail.password, Math.ceil(Math.random() * 14), (err, hash) => {
+            user.password = hash;
+            user.save(function (err) {
+                if (!err) {
+                    resolve(user);
+                } else {
+                    reject(err);
+                }
+            });
+
+        })
+       
     })
 
 
@@ -91,18 +98,32 @@ exports.updateUser = function (id, userDetail) {
                 user.email = userDetail.email;
                 user.phone = userDetail.phone;
                 user.role = userDetail.role;
-                user.password = userDetail.password;
+               // user.password = userDetail.password;
                 user.isDeactivated = userDetail.isDeactivated ? userDetail.isDeactivated : false;
                 user.created_date = userDetail.created_date;
-            
+
+                bcrypt.hash(userDetail.password, Math.ceil(Math.random() * 14), (err, hash) => {
+                    user.password = hash;
+                    user.save(function (err) {
+                        if (!err) {
+                            resolve(user);
+                        } else {
+                            reject(err);
+                        }
+                    });
+        
+                })
+
+                
+
                 // save the user and check for errors
-                user.save(function (err) {
+               /*  user.save(function (err) {
                     if (!err) {
                         resolve(user);
                     } else {
                         reject(err);
                     }
-                });
+                }); */
 
             }
 
