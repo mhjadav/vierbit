@@ -24,7 +24,10 @@ var storeSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
-    created_date: Date,
+    created_date: {
+        type: Date,
+        default: Date.now
+    },
     updated_date: {
         type: Date,
         default: Date.now

@@ -18,9 +18,6 @@ exports.index = async function (req, res) {
 };
 
 exports.new = async function (req, res) {
-
-    let isUrl = validator.isUrl(req.body.url);
-    let user = validator.isEmpty(req.body.user);
     
     await DomainService.addDomain(req.body).then((domain) => {
         res.json({

@@ -4,11 +4,15 @@ var domainSchema = mongoose.Schema({
         type: String,
         required: true,
         lowercase: true,
-        trim: true,
-        unique: true
     },
-    user: mongoose.Schema.Types.ObjectId,
-    created_date: Date,
+    user: {
+        id: mongoose.Schema.Types.ObjectId,
+        username: String
+    },
+    created_date: {
+        type: Date,
+        default: Date.now
+    },
     updated_date: {
         type: Date,
         default: Date.now

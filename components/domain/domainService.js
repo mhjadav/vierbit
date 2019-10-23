@@ -20,7 +20,6 @@ exports.addDomain = function (domainDetail) {
     var domain = new DomainModel();
     domain.url = domainDetail.url;
     domain.user = domainDetail.user;
-    domain.created_date = Date.now();
     domain.isDeactivated = domainDetail.isDeactivated ? domainDetail.isDeactivated : false;
 
     return new Promise(function (resolve, reject) {
@@ -40,7 +39,7 @@ exports.addDomain = function (domainDetail) {
 exports.removeDomain = function (id) {
 
     return new Promise(function (resolve, reject) {
-        DomainModel.remove({
+        DomainModel.deleteOne({
             _id: id
         }, function (err) {
             if (!err) {
@@ -82,8 +81,8 @@ exports.updateDomain = function (id, domainDetail) {
             } else {
                 domain.url = domainDetail.url;
                 domain.user = domainDetail.user;
-                domain.created_date = domainDetail.created_date;
-                domain.isDeactivated = domainDetail.isDeactivated ? domainDetail.isDeactivated : false;
+                domain.isDeactivated = domainDetail.isDeactivated;
+                domain.updated_date = Date.now();
                 // save the domain and check for errors
                 domain.save(function (err) {
                     if (!err) {

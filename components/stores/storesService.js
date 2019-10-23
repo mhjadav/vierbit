@@ -24,7 +24,6 @@ exports.addStore = function (storeDetail) {
     store.city = storeDetail.city;
     store.state = storeDetail.state;
     store.pincode = storeDetail.pincode;
-    store.created_date = Date.now();
     store.isDeactivated = storeDetail.isDeactivated ? storeDetail.isDeactivated : false;
 
     return new Promise(function (resolve, reject) {
@@ -60,7 +59,6 @@ exports.removeStore = function (id) {
 }
 
 exports.findStore = function (id) {
-    console.log("id: " + id);
     return new Promise(function (resolve, reject) {
         StoreModel.findById(id, function (err, store) {
             console.log("store: " + store);
@@ -90,8 +88,8 @@ exports.updateStore = function (id, storeDetail) {
                 store.city = storeDetail.city;
                 store.state = storeDetail.state;
                 store.pincode = storeDetail.pincode;
-                store.created_date = storeDetail.created_date;
-                store.isDeactivated = storeDetail.isDeactivated ? storeDetail.isDeactivated : false;
+                store.updated_date = Date.now();
+                store.isDeactivated = storeDetail.isDeactivated;
                 // save the store and check for errors
                 store.save(function (err) {
                     if (!err) {

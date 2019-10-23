@@ -7,7 +7,6 @@ var userSchema = mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true
     },
     email: {
         type: String,
@@ -21,13 +20,17 @@ var userSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-   role: mongoose.Schema.Types.ObjectId,
+   role: {
+       id: mongoose.Schema.Types.ObjectId,
+       name: String
+   },
     gender: {
         type: String,
         required: true
     },
     created_date: {
-        type: Date
+        type: Date,
+        default: Date.now
     },
     updated_date: {
          type: Date,

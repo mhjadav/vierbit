@@ -59,7 +59,7 @@ exports.delete = async function (req, res) {
 
     await StoreService.removeStore(req.params.store_id).then((message) => {
         res.json({
-            Message: message
+            "message": message
         })
     }).catch((error) => {
         res.send("Error : " + error.message);

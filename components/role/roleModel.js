@@ -5,7 +5,8 @@ var roleSchema = mongoose.Schema({
         required: true
     },
     access_rights: [{
-        type: String
+        type: String,
+        required: true
     }],
     created_date: {
         type: Date,
@@ -15,12 +16,9 @@ var roleSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    isDeactivated: {
-         type: Boolean,
-         default: false
-         }
+    isDeactivated: Boolean
 });
-var Role = module.exports = mongoose.model('role', roleSchema);
+var Role = module.exports = mongoose.model('Role', roleSchema);
 module.exports.get = function (callback, limit) {
     Role.find(callback).limit(limit);
 }

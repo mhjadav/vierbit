@@ -27,10 +27,7 @@ exports.addUser = function (userDetail) {
     user.role = userDetail.role;
     //user.password = userDetail.password;
     user.isDeactivated = userDetail.isDeactivated ? userDetail.isDeactivated : false;
-    user.created_date = Date.now();
-
-
-
+    
     return new Promise(function (resolve, reject) {
         bcrypt.hash(userDetail.password, Math.ceil(Math.random() * 14), (err, hash) => {
             user.password = hash;
@@ -52,7 +49,7 @@ exports.addUser = function (userDetail) {
 exports.removeUser = function (id) {
 
     return new Promise(function (resolve, reject) {
-        UserModel.remove({
+        UserModel.deleteOne({
             _id: id
         }, function (err) {
             if (!err) {
@@ -99,8 +96,9 @@ exports.updateUser = function (id, userDetail) {
                 user.phone = userDetail.phone;
                 user.role = userDetail.role;
                // user.password = userDetail.password;
-                user.isDeactivated = userDetail.isDeactivated ? userDetail.isDeactivated : false;
-                user.created_date = userDetail.created_date;
+                user.isDeactivated = userDetail.isDeactivated;
+                user.updated_date = Date.now();
+                
 
                 bcrypt.hash(userDetail.password, Math.ceil(Math.random() * 14), (err, hash) => {
                     user.password = hash;

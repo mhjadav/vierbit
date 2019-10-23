@@ -1,8 +1,8 @@
 
-Service = require('./roleService')
+const  RoleService = require('./roleService')
 // Handle index actions
 exports.index = async function (req, res) {
-    await Service.getAllRole().then((roles) => {
+    await RoleService.getAllRole().then((roles) => {
         res.json({
             message: "Data fetched successfully",
             data: roles
@@ -16,7 +16,7 @@ exports.index = async function (req, res) {
 
 exports.new = async function (req, res) {
 
-    await Service.addRole(req.body).then((role) => {
+    await RoleService.addRole(req.body).then((role) => {
         res.json({
             message: "New record addded successfully",
             data: role
@@ -30,7 +30,7 @@ exports.new = async function (req, res) {
 
 exports.view = async function (req, res) {
 
-    await Service.findRole(req.params.role_id).then((message) => {
+    await RoleService.findRole(req.params.role_id).then((message) => {
         res.send(message);
     }).catch((error) => {
         res.send("Error : " + error.message);
@@ -40,7 +40,7 @@ exports.view = async function (req, res) {
 };
 exports.update = async function (req, res) {
 
-    await Service.updateRole(req.params.role_id, req.body).then((role) => {
+    await RoleService.updateRole(req.params.role_id, req.body).then((role) => {
         res.json({
             message: "Record updated successfully",
             data: role
@@ -53,7 +53,7 @@ exports.update = async function (req, res) {
 };
 exports.delete = async function (req, res) {
 
-    await Service.removeRole(req.params.role_id, req.body).then((message) => {
+    await RoleService.removeRole(req.params.role_id, req.body).then((message) => {
         res.json({
             Message: message
         })
