@@ -8,6 +8,10 @@ var userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    parent: {
+        id: mongoose.Schema.Types.ObjectId,
+        username: String
+    },
     email: {
         type: String,
         required: true
@@ -20,10 +24,10 @@ var userSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-   role: {
-       id: mongoose.Schema.Types.ObjectId,
-       name: String
-   },
+    role: {
+        id: mongoose.Schema.Types.ObjectId,
+        name: String
+    },
     gender: {
         type: String,
         required: true
@@ -33,9 +37,9 @@ var userSchema = mongoose.Schema({
         default: Date.now
     },
     updated_date: {
-         type: Date,
-         default: Date.now
-     },
+        type: Date,
+        default: Date.now
+    },
     isDeactivated: Boolean
 });
 var User = module.exports = mongoose.model('User', userSchema);

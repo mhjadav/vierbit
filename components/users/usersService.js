@@ -25,6 +25,7 @@ exports.addUser = function (userDetail) {
     user.email = userDetail.email;
     user.phone = userDetail.phone;
     user.role = userDetail.role;
+    user.parent = userDetail.parent;
     //user.password = userDetail.password;
     user.isDeactivated = userDetail.isDeactivated ? userDetail.isDeactivated : false;
     
@@ -95,6 +96,7 @@ exports.updateUser = function (id, userDetail) {
                 user.email = userDetail.email;
                 user.phone = userDetail.phone;
                 user.role = userDetail.role;
+                user.parent = userDetail.parent;
                // user.password = userDetail.password;
                 user.isDeactivated = userDetail.isDeactivated;
                 user.updated_date = Date.now();
