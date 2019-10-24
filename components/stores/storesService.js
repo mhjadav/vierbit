@@ -23,6 +23,8 @@ exports.addStore = function (storeDetail) {
     store.address = storeDetail.address;
     store.city = storeDetail.city;
     store.state = storeDetail.state;
+    store.email = storeDetail.email;
+    store.phone = storeDetail.phone;
     store.pincode = storeDetail.pincode;
     store.isDeactivated = storeDetail.isDeactivated ? storeDetail.isDeactivated : false;
 
@@ -90,6 +92,8 @@ exports.updateStore = function (id, storeDetail) {
                 store.pincode = storeDetail.pincode;
                 store.updated_date = Date.now();
                 store.isDeactivated = storeDetail.isDeactivated;
+                store.email = storeDetail.email;
+                store.phone = storeDetail.phone;
                 // save the store and check for errors
                 store.save(function (err) {
                     if (!err) {

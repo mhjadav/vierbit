@@ -20,6 +20,14 @@ var storeSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    email: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: Number,
+        required: true
+    },
     pincode: {
         type: Number,
         required: true,
