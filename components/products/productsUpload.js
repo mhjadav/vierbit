@@ -3,7 +3,7 @@ var mkdirp = require('mkdirp');
 
 var storage = multer.diskStorage({
   destination: async function (req, file, cb) {
-    let dir = `./static/images/${req.body.domain_name}/products/${req.body.name}`;
+    let dir = `./static/images/${req.body.domain.name}/${req.body.store.name}/products/${req.body.name}`;
 
     await makeDir(dir).then((created) => {
       if (created) {

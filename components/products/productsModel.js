@@ -16,15 +16,18 @@ var productSchema = mongoose.Schema({
     product_code: String,
     rating: Number,
     quantity: Number,
-    domain_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        require: true
+    domain: {
+        id: mongoose.Schema.Types.ObjectId,
+        name: String
     },
-    domain_name: {
-        type: String,
-        require: true
+    store: {
+        id: mongoose.Schema.Types.ObjectId,
+        name: String
     },
-    created_date: Date,
+    created_date: {
+        type: Date,
+        default: Date.now
+    },
     updated_date: {
         type: Date,
         default: Date.now
