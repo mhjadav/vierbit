@@ -1,7 +1,9 @@
 
 const  RoleService = require('./roleService')
+const RoleValidate = require('./roleValidate')
 // Handle index actions
 exports.index = async function (req, res) {
+
     await RoleService.getAllRole().then((roles) => {
         res.json({
             message: "Data fetched successfully",
@@ -16,14 +18,21 @@ exports.index = async function (req, res) {
 
 exports.new = async function (req, res) {
 
-    await RoleService.addRole(req.body).then((role) => {
-        res.json({
-            message: "New record addded successfully",
-            data: role
+    await RoleValidate.validate(req.body).then(() => {
+         RoleService.addRole(req.body).then((role) => {
+            res.json({
+                message: "New record addded successfully",
+                data: role
+            })
+        }).catch((error) => {
+            res.send("Error : " + error.message);
         })
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
+
+   
+   
 
 
 };
