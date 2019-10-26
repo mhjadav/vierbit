@@ -1,5 +1,6 @@
 let  DomainModel = require('./domainModel');
 
+
 exports.getAllDomain = function () {
 
     return new Promise(function (resolve, reject) {

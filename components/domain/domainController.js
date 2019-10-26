@@ -1,7 +1,7 @@
 
 const DomainService = require('./domainService')
 const validator = require('../validation/validate');
-const logger = require("../../logger");
+const domainValidate = require('./domainValidate')
 // Handle index actions
 exports.index = async function (req, res) {
 
@@ -18,15 +18,23 @@ exports.index = async function (req, res) {
 };
 
 exports.new = async function (req, res) {
-    
-    await DomainService.addDomain(req.body).then((domain) => {
-        res.json({
-            message: "New record addded successfully",
-            data: domain
+
+    await domainValidate.validate(req.body).then(() => {
+
+        DomainService.addDomain(req.body).then((domain) => {
+            res.json({
+                message: "New record addded successfully",
+                data: domain
+            })
+        }).catch((error) => {
+            res.send("Error : " + error.message);
         })
+
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
+
+
 
 
 };
@@ -43,16 +51,22 @@ exports.view = async function (req, res) {
 };
 exports.update = async function (req, res) {
 
-    let isUrl = validator.isUrl(req.body.url);
-    console.log("is URL : " + isUrl);
-    await DomainService.updateDomain(req.params.domain_id, req.body).then((domain) => {
-        res.json({
-            message: "Record updated successfully",
-            data: domain
+    await domainValidate.validate(req.body).then(() => {
+
+        DomainService.updateDomain(req.params.domain_id, req.body).then((domain) => {
+            res.json({
+                message: "Record updated successfully",
+                data: domain
+            })
+        }).catch((error) => {
+            res.send("Error : " + error.message);
         })
+
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
+
+
 
 
 };

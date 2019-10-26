@@ -1,7 +1,7 @@
 
 const  RoleService = require('./roleService')
 const RoleValidate = require('./roleValidate')
-// Handle index actions
+
 exports.index = async function (req, res) {
 
     await RoleService.getAllRole().then((roles) => {
@@ -30,11 +30,6 @@ exports.new = async function (req, res) {
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
-
-   
-   
-
-
 };
 
 exports.view = async function (req, res) {
@@ -49,14 +44,20 @@ exports.view = async function (req, res) {
 };
 exports.update = async function (req, res) {
 
-    await RoleService.updateRole(req.params.role_id, req.body).then((role) => {
-        res.json({
-            message: "Record updated successfully",
-            data: role
+    await RoleValidate.validate(req.body).then(() => {
+         RoleService.updateRole(req.params.role_id, req.body).then((role) => {
+            res.json({
+                message: "Record updated successfully",
+                data: role
+            })
+        }).catch((error) => {
+            res.send("Error : " + error.message);
         })
-    }).catch((error) => {
-        res.send("Error : " + error.message);
-    })
+   }).catch((error) => {
+       res.send("Error : " + error.message);
+   })
+
+  
 
 
 };
@@ -69,7 +70,4 @@ exports.delete = async function (req, res) {
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
-
-
-
 }
