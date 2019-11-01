@@ -1,28 +1,18 @@
-
+const { body } = require('express-validator')
 const roleModel = require('./roleModel')
-const validateFunctions = require('../validation/validateFunctions');
-const errorStrings = require('../validation/errorStrings');
 
-exports.validate = function (role) {
-    return new Promise((resolve, reject) => {
-        let isRoleValid = validateFunctions.validateUsername(role.name);
-        if (isRoleValid) {
-            roleModel.findOne({ name: role.name }, function (err, duplicateRole) {
-                if(err) reject(err);
-                if(duplicateRole) {
-                    reject({
-                        "message": "Role name already exist.."
-                    })
-                } else {
-                    resolve();
+exports.validate = () => {
+     return [ 
+        body('name', 'Invalid role name').exists().matches(/^[a-zA-Z0-9-_]{6,20}$/).custom((value, {req}) => {
+          return roleModel.findOne({name:value}).then((role) => {
+              if(role) {
+                if(req.params.role_id !== role.id) {
+                  return Promise.reject('Role name already exists');
                 }
-            })
-        } else {
-            reject({
-                "message": errorStrings.usernameError("Role name")
-            })
-        }
-    })
-}
-
+              }
+          })
+        })
+       ]   
+    
+  }
 

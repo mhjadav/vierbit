@@ -1,14 +1,15 @@
 let router = require('express').Router();
+let roleValidate = require('./roleValidate')
 
 var roleController = require('./roleController');
 
 router.route('/roles')
     .get(roleController.index)
-    .post(roleController.new);
+    .post(roleValidate.validate(), roleController.new);
 router.route('/roles/:role_id')
     .get(roleController.view)
-    .patch(roleController.update)
-    .put(roleController.update)
+    .patch(roleValidate.validate(), roleController.update)
+    .put(roleValidate.validate(), roleController.update)
     .delete(roleController.delete);
 
 module.exports = router;

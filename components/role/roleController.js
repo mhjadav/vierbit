@@ -1,9 +1,8 @@
 
 const  RoleService = require('./roleService')
-const RoleValidate = require('./roleValidate')
+const { validationResult } = require('express-validator');
 
 exports.index = async function (req, res) {
-
     await RoleService.getAllRole().then((roles) => {
         res.json({
             message: "Data fetched successfully",
@@ -12,14 +11,19 @@ exports.index = async function (req, res) {
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
-
-
 };
 
 exports.new = async function (req, res) {
 
-    await RoleValidate.validate(req.body).then(() => {
-         RoleService.addRole(req.body).then((role) => {
+    try {
+        const errors = validationResult(req);
+  
+        if (!errors.isEmpty()) {
+          res.status(422).json({ errors: errors.array() });
+          return;
+        }
+
+        await RoleService.addRole(req.body).then((role) => {
             res.json({
                 message: "New record addded successfully",
                 data: role
@@ -27,25 +31,32 @@ exports.new = async function (req, res) {
         }).catch((error) => {
             res.send("Error : " + error.message);
         })
-    }).catch((error) => {
-        res.send("Error : " + error.message);
-    })
+  
+       
+     } catch(err) {
+       return next(err)
+     }
+       
 };
 
 exports.view = async function (req, res) {
-
     await RoleService.findRole(req.params.role_id).then((message) => {
         res.send(message);
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
-
-
 };
+
 exports.update = async function (req, res) {
 
-    await RoleValidate.validate(req.body).then(() => {
-         RoleService.updateRole(req.params.role_id, req.body).then((role) => {
+    try {
+        const errors = validationResult(req);
+  
+        if (!errors.isEmpty()) {
+          res.status(422).json({ errors: errors.array() });
+          return;
+        }
+        await RoleService.updateRole(req.params.role_id, req.body).then((role) => {
             res.json({
                 message: "Record updated successfully",
                 data: role
@@ -53,14 +64,12 @@ exports.update = async function (req, res) {
         }).catch((error) => {
             res.send("Error : " + error.message);
         })
-   }).catch((error) => {
-       res.send("Error : " + error.message);
-   })
 
-  
-
-
+    } catch(err) {
+        return next(err)
+      }
 };
+
 exports.delete = async function (req, res) {
 
     await RoleService.removeRole(req.params.role_id, req.body).then((message) => {
