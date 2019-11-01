@@ -1,7 +1,8 @@
 
 const DomainService = require('./domainService')
 const validator = require('../validation/validate');
-const domainValidate = require('./domainValidate')
+const { validationResult } = require('express-validator');
+
 // Handle index actions
 exports.index = async function (req, res) {
 
@@ -18,9 +19,12 @@ exports.index = async function (req, res) {
 };
 
 exports.new = async function (req, res) {
-
-    await domainValidate.validate(req.body).then(() => {
-
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+        }
         DomainService.addDomain(req.body).then((domain) => {
             res.json({
                 message: "New record addded successfully",
@@ -29,14 +33,9 @@ exports.new = async function (req, res) {
         }).catch((error) => {
             res.send("Error : " + error.message);
         })
-
-    }).catch((error) => {
-        res.send("Error : " + error.message);
-    })
-
-
-
-
+    } catch (err) {
+        return next(err)
+    }
 };
 
 exports.view = async function (req, res) {
@@ -50,9 +49,12 @@ exports.view = async function (req, res) {
 
 };
 exports.update = async function (req, res) {
-
-    await domainValidate.validate(req.body).then(() => {
-
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+        }
         DomainService.updateDomain(req.params.domain_id, req.body).then((domain) => {
             res.json({
                 message: "Record updated successfully",
@@ -61,14 +63,9 @@ exports.update = async function (req, res) {
         }).catch((error) => {
             res.send("Error : " + error.message);
         })
-
-    }).catch((error) => {
-        res.send("Error : " + error.message);
-    })
-
-
-
-
+    } catch (err) {
+        return next(err)
+    }
 };
 exports.delete = async function (req, res) {
 
@@ -79,7 +76,4 @@ exports.delete = async function (req, res) {
     }).catch((error) => {
         res.send("Error : " + error.message);
     })
-
-
-
 }

@@ -1,29 +1,19 @@
-
+const { body } = require('express-validator')
 const domainModel = require('./domainModel')
-const validator = require('validator')
-const errorStrings = require('../validation/errorStrings')
-var urlParser = require('url');
 
-exports.validate = function (domain) {
-    return new Promise((resolve, reject) => {
-        let isUrlValid = validator.isURL(domain.url);
-        if (isUrlValid) {
-            domainModel.findOne({ url:domain.url}, function (err, duplicateUrl) {
-                if(err) reject(err);
-                if(duplicateUrl) {
-                    reject({
-                        "message": errorStrings.alreadyExistError("Url")
-                    })
-                } else {
-                    resolve();
+exports.validate = () => {
+     return [ 
+        body('url', 'Invalid url').exists().isURL().custom((value, {req}) => {
+          //  console.log("url : " +value);
+          return domainModel.findOne({url:value}).then((domain) => {
+              if(domain) {
+                if(req.params.domain_id !== domain.id) {
+                  return Promise.reject('Url already exists');
                 }
-            })
-        } else {
-            reject({
-                "message": errorStrings.invalidValueError("Url")
-            })
-        }
-    })
-}
-
+              }
+          })
+        })
+       ]   
+    
+  }
 
