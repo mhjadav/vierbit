@@ -27,6 +27,6 @@ app.use('/api', storeRoutes);
 app.get('/upload-images', (req,res) => {
     res.sendFile(__dirname + '/index.html');
 })
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 
 app.listen(port,(() => console.log("Server running on port " + port)));

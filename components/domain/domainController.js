@@ -1,6 +1,5 @@
 
 const DomainService = require('./domainService')
-const validator = require('../validation/validate');
 const { validationResult } = require('express-validator');
 
 // Handle index actions

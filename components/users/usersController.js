@@ -1,4 +1,5 @@
 const UsersService = require('./usersService')
+const { validationResult } = require('express-validator')
 // Handle index actions
 exports.index = async function (req, res) {
     await UsersService.getAllUsers().then((users) => {
@@ -15,14 +16,24 @@ exports.index = async function (req, res) {
 
 exports.new = async function (req, res) {
 
-    await UsersService.addUser(req.body).then((user) => {
-        res.json({
-            message: "New record addded successfully",
-            data: user
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+        }
+
+        await UsersService.addUser(req.body).then((user) => {
+            res.json({
+                message: "New record addded successfully",
+                data: user
+            })
+        }).catch((error) => {
+            res.send("Error : " + error.message);
         })
-    }).catch((error) => {
-        res.send("Error : " + error.message);
-    })
+    } catch (err) {
+        return next(err)
+    }
 
 
 };
@@ -39,14 +50,25 @@ exports.view = async function (req, res) {
 };
 exports.update = async function (req, res) {
 
-    await UsersService.updateUser(req.params.user_id, req.body).then((user) => {
-        res.json({
-            message: "Record updated successfully",
-            data: user
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(422).json({ errors: errors.array() });
+            return;
+        }
+
+        await UsersService.updateUser(req.params.user_id, req.body).then((user) => {
+            res.json({
+                message: "Record updated successfully",
+                data: user
+            })
+        }).catch((error) => {
+            res.send("Error : " + error.message);
         })
-    }).catch((error) => {
-        res.send("Error : " + error.message);
-    })
+
+    } catch (err) {
+        return next(err)
+    }
 
 
 };

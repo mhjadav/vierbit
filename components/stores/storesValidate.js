@@ -5,7 +5,7 @@ const regex = require('../validation/regex')
 exports.validate = () => {
      return [ 
         body('name', 'Invalid store name').exists().matches(regex.uniqueNameRegex).custom((value, {req}) => {
-          return storeModel.findOne({name:value, 'domain.name': req.body.domain.name}).then((store) => {
+          return storeModel.findOne({name:value, 'domain.id': req.body.domain.id}).then((store) => {
               console.log("store: " + store);
               console.log("params : " + req.params.store_id);
               console.log("store id : " + store.id);
