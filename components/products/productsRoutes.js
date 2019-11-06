@@ -6,11 +6,11 @@ var productController = require('./productsController');
 
 router.route('/products')
     .get(productController.index)
-    .post(upload, productValidate.validate(), productController.new);
+    .post(productValidate.validate(), productController.new);
 router.route('/products/:product_id')
     .get(productController.view)
-    .patch(upload, productValidate.validate(), productController.update)
-    .put(upload, productValidate.validate(), productController.update)
+    .patch(productValidate.validate(), productController.update)
+    .put(productValidate.validate(), productController.update)
     .delete(productController.delete);
     router.route('/products/deactivate/:product_id')
     .patch(productController.deactivate)

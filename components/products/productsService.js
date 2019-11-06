@@ -1,5 +1,6 @@
 let ProductModel = require('./productsModel');
 var rimraf = require('rimraf');
+var mkdirp = require('mkdirp');
 var fs = require('fs');
 const logger = require('../../logger');
 
@@ -22,16 +23,9 @@ exports.addProduct = function (productDetail, files) {
     var product = new ProductModel();
     product.name = productDetail.name;
     product.description = productDetail.description;
-
     product.tags = productDetail.tags;
     product.buying_price = productDetail.buying_price;
     product.selling_price = productDetail.selling_price;
-
-    /* files.forEach(element => {
-        product.images.push(element.filename);
-
-    }); */
-    //product.images = productDetail.images;
     product.product_code = productDetail.product_code;
     product.rating = productDetail.rating;
     product.quantity = productDetail.quantity;
@@ -43,6 +37,12 @@ exports.addProduct = function (productDetail, files) {
         product.save(function (err) {
 
             if (!err) {
+                let dir = `./static/images/${product.domain.name}/${product.store.name}/products/${product.name}`;
+                mkdirp(dir, function (err) {
+                    if (err) {
+                        reject(err)
+                    }
+                });
                 resolve(product);
             } else {
                 reject(err);
@@ -94,7 +94,7 @@ exports.findProduct = function (id) {
 exports.deactivateProduct = function (id) {
 
     return new Promise(function (resolve, reject) {
-        ProductModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, product) {
+        ProductModel.findByIdAndUpdate(id, { isDeactivated: true }, function (err, product) {
             if (product) {
                 resolve(product);
             } else {
@@ -115,20 +115,7 @@ exports.updateProduct = function (id, productDetail, files) {
                 reject(err);
             } else {
 
-                
-                let dir = `./static/images/${product.domain.name}/${product.store.name}/products/${product.name}`
                 let old_name = product.name;
-                let old_domain = product.domain.name;
-                let old_store = product.store.name;
-
-                let old_images = product.images;
-                logger.info(old_images);
-
-                product.images = [];
-               /*  files.forEach(element => {
-                    product.images.push(element.filename);
-                }); */
-
                 product.name = productDetail.name;
                 product.domain = productDetail.domain;
                 product.store = productDetail.store;
@@ -143,32 +130,23 @@ exports.updateProduct = function (id, productDetail, files) {
                 product.isDeactivated = productDetail.isDeactivated;
                 product.save(function (err) {
                     if (!err) {
+                        if (old_name !== productDetail.name) {
+                            let olddir = `./static/images/${product.domain.name}/${product.store.name}/products/${old_name}`;
+                            let newdir = `./static/images/${product.domain.name}/${product.store.name}/products/${productDetail.name}`;
+                            if (fs.existsSync(olddir)) {
+                                fs.renameSync(olddir, newdir);
+                            }
+
+                        }
                         resolve(product);
                     } else {
                         reject(err);
                     }
                 });
-               
-                if (old_name !== productDetail.name || old_domain !== productDetail.domain.name || old_store !== productDetail.store.name) {
-                    rimraf(dir, function () {
-                        logger.info(`Directory ${dir} deleted successfully....`);
-                    });
-                } else {
-                    RemovePhotos(dir, old_images)
-                }
+
+
             }
         });
 
-    });
-}
-
-function RemovePhotos(dir, images) {
-
-    let path = dir + '/';
-    images.forEach(element => {
-        fs.unlink(path + element, (err) => {
-            if (err) throw err;
-            logger.info(path + element + ' file was deleted');
-        });
     });
 }
