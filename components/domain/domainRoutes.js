@@ -12,5 +12,8 @@ router.route('/domain/:domain_id')
     .patch(domainValidate.validate(), domainController.update)
     .put(domainValidate.validate(), domainController.update)
     .delete(domainController.delete);
+router.route('/domain/deactivate/:domain_id')
+    .patch(domainController.deactivate)
+    .put(domainController.deactivate);
 
 module.exports = router;

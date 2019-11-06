@@ -69,6 +69,18 @@ exports.update = async function (req, res) {
         return next(err)
     }
 };
+
+exports.deactivate = async function (req, res) {
+    StoreService.deactivateStore(req.params.store_id).then((store) => {
+        res.json({
+            message: "Store deactivated successfully"
+        })
+    }).catch((error) => {
+        res.send("Error : " + error.message);
+    })
+};
+
+
 exports.delete = async function (req, res) {
 
     await StoreService.removeStore(req.params.store_id).then((message) => {

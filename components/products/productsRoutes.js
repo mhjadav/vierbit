@@ -12,5 +12,8 @@ router.route('/products/:product_id')
     .patch(upload, productValidate.validate(), productController.update)
     .put(upload, productValidate.validate(), productController.update)
     .delete(productController.delete);
+    router.route('/products/deactivate/:product_id')
+    .patch(productController.deactivate)
+    .put(productController.deactivate);
 
 module.exports = router;

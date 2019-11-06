@@ -71,6 +71,24 @@ exports.findRole = function (id) {
 
 }
 
+exports.deactivateRole = function (id) {
+
+    return new Promise(function (resolve, reject) {
+        RoleModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, role) {
+            console.log(role);
+            if (role) {
+                resolve(role);
+            } else {
+                reject(err);
+            }
+        });
+    });
+
+
+}
+
+
+
 exports.updateRole = function (id, roleDetail) {
 
     return new Promise(function (resolve, reject) {

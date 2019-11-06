@@ -11,5 +11,8 @@ router.route('/users/:user_id')
     .patch(userValidate.validate(), userController.update)
     .put(userValidate.validate(), userController.update)
     .delete(userController.delete);
+router.route('/users/deactivate/:user_id')
+    .patch(userController.deactivate)
+    .put(userController.deactivate);
 
 module.exports = router;

@@ -71,6 +71,21 @@ exports.findDomain = function (id) {
 
 }
 
+exports.deactivateDomain = function (id) {
+
+    return new Promise(function (resolve, reject) {
+        DomainModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, domain) {
+            if (domain) {
+               resolve(domain)
+            } else {
+                reject(err);
+            }
+        });
+    });
+
+
+}
+
 exports.updateDomain = function (id, domainDetail) {
 
     return new Promise(function (resolve, reject) {

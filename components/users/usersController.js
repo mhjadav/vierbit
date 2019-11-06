@@ -72,6 +72,19 @@ exports.update = async function (req, res) {
 
 
 };
+
+exports.deactivate = async function (req, res) {
+
+    await UsersService.deactivateUser(req.params.user_id).then((user) => {
+        res.json({
+            message: "User deactivated successfully"
+        })
+    }).catch((error) => {
+        res.send("Error : " + error.message);
+    })
+};
+
+
 exports.delete = async function (req, res) {
 
     await UsersService.removeUser(req.params.user_id, req.body).then((message) => {

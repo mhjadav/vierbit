@@ -11,5 +11,8 @@ router.route('/roles/:role_id')
     .patch(roleValidate.validate(), roleController.update)
     .put(roleValidate.validate(), roleController.update)
     .delete(roleController.delete);
+router.route('/roles/deactivate/:role_id')
+    .patch(roleController.deactivate)
+    .put(roleController.deactivate);
 
 module.exports = router;

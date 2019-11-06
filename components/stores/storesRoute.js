@@ -11,5 +11,9 @@ router.route('/stores/:store_id')
     .patch(storeValidate.validate(), storeController.update)
     .put(storeValidate.validate(), storeController.update)
     .delete(storeController.delete);
+router.route('/stores/deactivate/:store_id')
+    .patch(storeController.deactivate)
+    .put(storeController.deactivate);
+   
 
 module.exports = router;

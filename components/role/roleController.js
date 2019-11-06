@@ -1,5 +1,5 @@
 
-const  RoleService = require('./roleService')
+const RoleService = require('./roleService')
 const { validationResult } = require('express-validator');
 
 exports.index = async function (req, res) {
@@ -17,10 +17,10 @@ exports.new = async function (req, res) {
 
     try {
         const errors = validationResult(req);
-  
+
         if (!errors.isEmpty()) {
-          res.status(422).json({ errors: errors.array() });
-          return;
+            res.status(422).json({ errors: errors.array() });
+            return;
         }
 
         await RoleService.addRole(req.body).then((role) => {
@@ -31,12 +31,12 @@ exports.new = async function (req, res) {
         }).catch((error) => {
             res.send("Error : " + error.message);
         })
-  
-       
-     } catch(err) {
-       return next(err)
-     }
-       
+
+
+    } catch (err) {
+        return next(err)
+    }
+
 };
 
 exports.view = async function (req, res) {
@@ -51,10 +51,10 @@ exports.update = async function (req, res) {
 
     try {
         const errors = validationResult(req);
-  
+
         if (!errors.isEmpty()) {
-          res.status(422).json({ errors: errors.array() });
-          return;
+            res.status(422).json({ errors: errors.array() });
+            return;
         }
         await RoleService.updateRole(req.params.role_id, req.body).then((role) => {
             res.json({
@@ -65,9 +65,22 @@ exports.update = async function (req, res) {
             res.send("Error : " + error.message);
         })
 
-    } catch(err) {
+    } catch (err) {
         return next(err)
-      }
+    }
+};
+
+exports.deactivate = async function (req, res) {
+
+    await RoleService.deactivateRole(req.params.role_id).then((role) => {
+        res.json({
+            message: "Role deactivated successfully"
+        })
+    }).catch((error) => {
+        res.send("Error : " + error.message);
+    })
+
+
 };
 
 exports.delete = async function (req, res) {

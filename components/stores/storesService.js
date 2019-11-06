@@ -75,6 +75,22 @@ exports.findStore = function (id) {
 
 }
 
+exports.deactivateStore = function (id) {
+    return new Promise(function (resolve, reject) {
+        StoreModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, store) {
+            if (store) {
+                resolve(store);
+            } else {
+                reject(err);
+            }
+        });
+    });
+
+
+}
+
+
+
 exports.updateStore = function (id, storeDetail) {
 
     return new Promise(function (resolve, reject) {

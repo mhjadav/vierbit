@@ -91,6 +91,21 @@ exports.findProduct = function (id) {
 
 }
 
+exports.deactivateProduct = function (id) {
+
+    return new Promise(function (resolve, reject) {
+        ProductModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, product) {
+            if (product) {
+                resolve(product);
+            } else {
+                reject(err);
+            }
+        });
+    });
+
+
+}
+
 exports.updateProduct = function (id, productDetail, files) {
 
     return new Promise(function (resolve, reject) {

@@ -35,8 +35,8 @@ exports.new = async function (req, res) {
             res.send("Error : " + error.message);
         })
     } catch (err) {
-       // return next(err)
-       res.send("Error : " + err.message);
+        // return next(err)
+        res.send("Error : " + err.message);
     }
 
 
@@ -77,6 +77,20 @@ exports.update = async function (req, res) {
 
 
 };
+
+exports.deactivate = async function (req, res) {
+
+    await ProductService.deactivateProduct(req.params.product_id).then((product) => {
+        res.json({
+            message: "Product deactivated successfully"
+        })
+    }).catch((error) => {
+        logger.error(error);
+        res.send("Error : " + error.message);
+    })
+};
+
+
 exports.delete = async function (req, res) {
 
     await ProductService.removeProduct(req.params.product_id, req.body).then((message) => {

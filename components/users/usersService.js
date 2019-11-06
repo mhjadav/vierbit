@@ -81,6 +81,21 @@ exports.findUser = function (id) {
 
 }
 
+exports.deactivateUser = function (id) {
+
+    return new Promise(function (resolve, reject) {
+        UserModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, user) {
+            if (user) {
+                resolve(user);
+            } else {
+                reject(err);
+            }
+        });
+    });
+
+
+}
+
 exports.updateUser = function (id, userDetail) {
 
     return new Promise(function (resolve, reject) {

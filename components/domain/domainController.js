@@ -66,6 +66,20 @@ exports.update = async function (req, res) {
         return next(err)
     }
 };
+
+exports.deactivate = async function (req, res) {
+   
+        DomainService.deactivateDomain(req.params.domain_id).then((domain) => {
+            res.json({
+                message: "Domain deactivated successfully"
+            })
+        }).catch((error) => {
+            res.send("Error : " + error.message);
+        })
+  
+};
+
+
 exports.delete = async function (req, res) {
 
     await DomainService.removeDomain(req.params.domain_id, req.body).then((message) => {
