@@ -27,10 +27,10 @@ exports.addProduct = function (productDetail, files) {
     product.buying_price = productDetail.buying_price;
     product.selling_price = productDetail.selling_price;
 
-    files.forEach(element => {
+    /* files.forEach(element => {
         product.images.push(element.filename);
 
-    });
+    }); */
     //product.images = productDetail.images;
     product.product_code = productDetail.product_code;
     product.rating = productDetail.rating;
@@ -110,9 +110,9 @@ exports.updateProduct = function (id, productDetail, files) {
                 logger.info(old_images);
 
                 product.images = [];
-                files.forEach(element => {
+               /*  files.forEach(element => {
                     product.images.push(element.filename);
-                });
+                }); */
 
                 product.name = productDetail.name;
                 product.domain = productDetail.domain;

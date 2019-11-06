@@ -7,3 +7,5 @@ exports.addressDescriptionRegex = /^[a-zA-Z0-9-, ]{6,100}$/;
 exports.nameRegex = /^[a-zA-Z0-9-_ ]{6,20}$/;
 
 exports.uniqueNameRegex = /^[a-zA-Z0-9-_]{6,20}$/;
+
+exports.productCodeRegex = /^[a-zA-Z0-9]{3,10}$/;
