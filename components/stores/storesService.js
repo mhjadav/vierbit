@@ -1,4 +1,6 @@
 let StoreModel = require('./storesModel')
+const rimraf = require('rimraf')
+const ProductModel = require('../products/productsModel')
 
 exports.getAllStore = function () {
 
@@ -45,15 +47,28 @@ exports.addStore = function (storeDetail) {
 exports.removeStore = function (id) {
 
     return new Promise(function (resolve, reject) {
-        StoreModel.deleteOne({
-            _id: id
-        }, function (err) {
-            if (!err) {
-                resolve("store Deleted Successfully");
-            } else {
-                reject(err);
-            }
-        });
+        StoreModel.findById(id, function (err, store) {
+            if(err) reject(err);
+            rimraf(`./static/images/${store.domain.id}/${id}`, function () {
+                ProductModel.deleteMany({ 'domain.id': store.domain.id }, function (err) {
+                    if(err) reject(err);
+                    StoreModel.deleteOne({
+                        _id: id
+                    }, function (err) {
+                        if (!err) {
+                            resolve("Store and all of its products deleted successfully");
+                        } else {
+                            reject(err);
+                        }
+                    });
+
+                })
+
+            })
+
+        })
+
+
 
     })
 
@@ -77,7 +92,7 @@ exports.findStore = function (id) {
 
 exports.deactivateStore = function (id) {
     return new Promise(function (resolve, reject) {
-        StoreModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, store) {
+        StoreModel.findByIdAndUpdate(id, { isDeactivated: true }, function (err, store) {
             if (store) {
                 resolve(store);
             } else {

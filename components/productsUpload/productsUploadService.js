@@ -11,7 +11,7 @@ exports.updateProduct = function (id, files) {
                 reject(err);
             } else {
                 let old_images = product.images;
-                let dir = `./static/images/${product.domain.name}/${product.store.name}/products/${product.name}/`;
+                let dir = `./static/images/${product.domain.id}/${product.store.id}/products/${product._id}/`;
                 product.images = [];
                 files.forEach(element => {
                     product.images.push(dir + element.filename);
