@@ -34,10 +34,11 @@ exports.addProduct = function (productDetail, files) {
     product.isDeactivated = productDetail.isDeactivated ? productDetail.isDeactivated : false;
 
     return new Promise(function (resolve, reject) {
-        product.save(function (err) {
+        product.save(function (err, newproduct) {
 
             if (!err) {
-                let dir = `./static/images/${product.domain.name}/${product.store.name}/products/${product.name}`;
+               
+                let dir = `./static/images/${newproduct.domain.id}/${newproduct.store.id}/products/${newproduct._id}`;
                 mkdirp(dir, function (err) {
                     if (err) {
                         reject(err)
@@ -58,7 +59,7 @@ exports.removeProduct = function (id) {
     return new Promise(function (resolve, reject) {
 
         ProductModel.findById(id, function (err, product) {
-            rimraf(`./static/images/${product.domain.name}/${product.store.name}/products/${product.name}`, function () {
+            rimraf(`./static/images/${product.domain.id}/${product.store.id}/products/${product._id}`, function () {
                 ProductModel.deleteOne({
                     _id: id
                 }, function (err) {
@@ -130,14 +131,6 @@ exports.updateProduct = function (id, productDetail, files) {
                 product.isDeactivated = productDetail.isDeactivated;
                 product.save(function (err) {
                     if (!err) {
-                        if (old_name !== productDetail.name) {
-                            let olddir = `./static/images/${product.domain.name}/${product.store.name}/products/${old_name}`;
-                            let newdir = `./static/images/${product.domain.name}/${product.store.name}/products/${productDetail.name}`;
-                            if (fs.existsSync(olddir)) {
-                                fs.renameSync(olddir, newdir);
-                            }
-
-                        }
                         resolve(product);
                     } else {
                         reject(err);

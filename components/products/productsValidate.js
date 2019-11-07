@@ -6,8 +6,7 @@ exports.validate = () => {
      return [ 
          
         body('name', 'Invalid product name').exists().matches(regex.uniqueNameRegex).custom((value, {req}) => {
-            console.log("i m in....");
-            console.log(req.body);
+        
           return productModel.findOne({name:value, 'domain.id': req.body.domain.id, 'store.id': req.body.store.id}).then((product) => {
              
               if(product) {
@@ -17,7 +16,6 @@ exports.validate = () => {
               }
           })
         }),
-       // body('city', 'Invalid city').exists(),
         body('description', 'Invalid description').exists().matches(regex.addressDescriptionRegex),
         body('buying_price', 'Invalid buying price').optional().isNumeric(),
         body('selling_price', 'Invalid selling price').optional().isNumeric(),

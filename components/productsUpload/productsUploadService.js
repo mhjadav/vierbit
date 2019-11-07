@@ -13,7 +13,6 @@ exports.updateProduct = function (id, files) {
                 let old_images = product.images;
                 let dir = `./static/images/${product.domain.name}/${product.store.name}/products/${product.name}/`;
                 product.images = [];
-                console.log("files length : " + files.length);
                 files.forEach(element => {
                     product.images.push(dir + element.filename);
                 });
@@ -22,7 +21,7 @@ exports.updateProduct = function (id, files) {
                 product.save(function (err) {
                     if (!err) {
                         if(old_images.length > 0) {
-                            RemovePhotos(old_images);
+                            removeImages(old_images);
                         }
                         resolve(product);
                     } else {
@@ -35,7 +34,7 @@ exports.updateProduct = function (id, files) {
     });
 }
 
-function RemovePhotos(images) {
+function removeImages(images) {
 
     images.forEach(element => {
         fs.unlink(element, (err) => {
