@@ -115,6 +115,7 @@ exports.updateStore = function (id, storeDetail) {
             if (err) {
                 reject(err);
             } else {
+                let old_store_name = store.name;
                 store.name = storeDetail.name;
                 store.domain = storeDetail.domain;
                 store.address = storeDetail.address;
@@ -128,6 +129,11 @@ exports.updateStore = function (id, storeDetail) {
                 // save the store and check for errors
                 store.save(function (err) {
                     if (!err) {
+                        if(old_store_name !== storeDetail.name){
+                            ProductModel.updateMany({'store.id' : id}, {'store.name' : storeDetail.name}, function(err) {
+                                if(err) reject(err);
+                            })
+                        }
                         resolve(store);
                     } else {
                         reject(err);

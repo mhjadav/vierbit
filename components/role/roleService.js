@@ -1,4 +1,5 @@
 RoleModel = require('./roleModel');
+const UserModel = require('../users/usersModel')
 
 exports.getAllRole = function () {
 
@@ -98,12 +99,18 @@ exports.updateRole = function (id, roleDetail) {
             if (err) {
                 reject(err);
             } else {
+                let old_role_name = role.name;
                 role.name = roleDetail.name;
                 role.access_rights = roleDetail.access_rights;
                 role.isDeactivated = roleDetail.isDeactivated;
                 role.updated_date = Date.now();
                 role.save(function (err) {
                     if (!err) {
+                        if(old_role_name !== roleDetail.name) {
+                            UserModel.updateMany({'role.id' : id}, {'role.name' : roleDetail.name}, function(err) {
+                                if(err) reject(err);
+                            })
+                        }
                         resolve(role);
                     } else {
                         reject(err);

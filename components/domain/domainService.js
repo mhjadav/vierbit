@@ -103,6 +103,7 @@ exports.updateDomain = function (id, domainDetail) {
             if (err) {
                 reject(err);
             } else {
+                let old_url = domain.url;
                 domain.url = domainDetail.url;
                 domain.user = domainDetail.user;
                 domain.isDeactivated = domainDetail.isDeactivated;
@@ -110,6 +111,14 @@ exports.updateDomain = function (id, domainDetail) {
                 // save the domain and check for errors
                 domain.save(function (err) {
                     if (!err) {
+                        if(old_url !== domainDetail.url) {
+                            StoreModel.updateMany({'domain.id' : id}, {'domain.name' : domainDetail.url}, function(err) {
+                                if(err) reject(err);
+                                ProductModel.updateMany({'domain.id' : id}, {'domain.name' : domainDetail.url}, function(err) {
+                                    if(err) reject(err);
+                                })
+                            })
+                        }
                         resolve(domain);
                     } else {
                         reject(err);

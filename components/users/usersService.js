@@ -1,5 +1,9 @@
 let UserModel = require('./usersModel');
 const bcrypt = require('bcrypt')
+const DomainModel = require('../domain/domainModel')
+const StoreModel = require('../stores/storesModel')
+const ProductModel = require('../products/productsModel')
+const rimraf = require('rimraf')
 
 exports.getAllUsers = function () {
 
@@ -50,6 +54,11 @@ exports.addUser = function (userDetail) {
 exports.removeUser = function (id) {
 
     return new Promise(function (resolve, reject) {
+        UserModel.findById(id, function(err, user) {
+            if(user.parent.name === undefined){
+              deleteUserData(id);
+            }
+        })
         UserModel.deleteOne({
             _id: id
         }, function (err) {
@@ -105,6 +114,7 @@ exports.updateUser = function (id, userDetail) {
             if (err) {
                 reject(err);
             } else {
+                let old_username = user.username;
                 user.name = userDetail.name;
                 user.username = userDetail.username;
                 user.gender = userDetail.gender;
@@ -121,6 +131,11 @@ exports.updateUser = function (id, userDetail) {
                     user.password = hash;
                     user.save(function (err) {
                         if (!err) {
+                            if(old_username !== userDetail.username) {
+                                DomainModel.updateMany({'user.id' : id}, {'user.username' : userDetail.username}, function(err) {
+                                    if(err) reject(err);
+                                })
+                            }
                             resolve(user);
                         } else {
                             reject(err);
@@ -128,21 +143,32 @@ exports.updateUser = function (id, userDetail) {
                     });
         
                 })
-
-                
-
-                // save the user and check for errors
-               /*  user.save(function (err) {
-                    if (!err) {
-                        resolve(user);
-                    } else {
-                        reject(err);
-                    }
-                }); */
-
             }
 
         });
 
     });
+}
+
+function deleteUserData(id){
+    DomainModel.find({'user.id' : id}, function(err, domains){
+        if(!err) {
+            domains.forEach(domain => {
+                rimraf(`./static/images/${domain._id}`, function(){
+                    ProductModel.deleteMany({'domain.id' : domain._id}, function(err){
+                        StoreModel.deleteMany({'domain.id' : domain._id}, function(err){
+                            DomainModel.deleteOne({
+                                _id : domain._id
+                            }, function(err) {
+                                console.log(domain.url + " deleted successfully...");
+                            })
+                        })
+                    })
+                    
+                })
+               
+            });
+        }
+    })
+
 }
