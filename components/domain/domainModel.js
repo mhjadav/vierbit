@@ -5,6 +5,25 @@ var domainSchema = mongoose.Schema({
         required: true,
         lowercase: true,
     },
+    emailConfig: {
+        host: {
+            type: String,
+            required: true
+        },
+        port: Number,
+        secure: Boolean,
+        auth: {
+            user: {
+                type: String,
+                required: true
+            },
+            pass: {
+                type: String,
+                required: true
+            }
+        }
+
+    },
     user: {
         id: mongoose.Schema.Types.ObjectId,
         username: String

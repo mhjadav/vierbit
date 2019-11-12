@@ -24,6 +24,7 @@ exports.addDomain = function (domainDetail) {
     var domain = new DomainModel();
     domain.url = domainDetail.url;
     domain.user = domainDetail.user;
+    domain.emailConfig = domainDetail.emailConfig;
     domain.isDeactivated = domainDetail.isDeactivated ? domainDetail.isDeactivated : false;
 
     return new Promise(function (resolve, reject) {
@@ -106,6 +107,7 @@ exports.updateDomain = function (id, domainDetail) {
                 let old_url = domain.url;
                 domain.url = domainDetail.url;
                 domain.user = domainDetail.user;
+                domain.emailConfig = domainDetail.emailConfig;
                 domain.isDeactivated = domainDetail.isDeactivated;
                 domain.updated_date = Date.now();
                 // save the domain and check for errors
