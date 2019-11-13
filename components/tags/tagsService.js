@@ -19,6 +19,7 @@ exports.addTag = function (tagDetail) {
     var tag = new TagModel();
     tag.name = tagDetail.name;
     tag.keywords = tagDetail.keywords;
+    tag.isDeactivated = tagDetail.isDeactivated;
 
     return new Promise(function (resolve, reject) {
         tag.save(function (err, newtag) {
