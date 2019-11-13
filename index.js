@@ -10,6 +10,7 @@ const authRoutes = require('./components/auth/authRoutes')
 const storeRoutes = require('./components/stores/storesRoute')
 const productsUploadRoutes = require('./components/productsUpload/productsUploadRoutes')
 const mailRoutes = require('./components/mail/mailRoutes')
+const postRoutes = require('./components/post/postRoutes')
 const logger = require('./logger');
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/api', authRoutes);
 app.use('/api', storeRoutes);
 app.use('/api', productsUploadRoutes);
 app.use('/api', mailRoutes);
+app.use('/api', postRoutes);
 
 app.get('/upload-images', (req,res) => {
     res.sendFile(__dirname + '/index.html');
