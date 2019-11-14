@@ -2,6 +2,7 @@ let DomainModel = require('./domainModel');
 const rimraf = require('rimraf')
 const StoreModel = require('../stores/storesModel')
 const ProductModel = require('../products/productsModel')
+const PostModel = require('../post/postModel')
 
 
 exports.getAllDomain = function () {
@@ -49,15 +50,18 @@ exports.removeDomain = function (id) {
                 if (err) reject(err);
                 ProductModel.deleteMany({ 'domain.id': id }, function (err) {
                     if (err) reject(err);
-                    DomainModel.deleteOne({
-                        _id: id
-                    }, function (err) {
-                        if (!err) {
-                            resolve("Domain and all of its stores and products Deleted Successfully");
-                        } else {
-                            reject(err);
-                        }
-                    });
+                    PostModel.deleteMany({ 'domain.id': id }, function (err) {
+                        if(err) reject(err);
+                        DomainModel.deleteOne({
+                            _id: id
+                        }, function (err) {
+                            if (!err) {
+                                resolve("Domain and all of its stores and products Deleted Successfully");
+                            } else {
+                                reject(err);
+                            }
+                        });
+                    })
                 })
             })
         })
@@ -113,11 +117,14 @@ exports.updateDomain = function (id, domainDetail) {
                 // save the domain and check for errors
                 domain.save(function (err) {
                     if (!err) {
-                        if(old_url !== domainDetail.url) {
-                            StoreModel.updateMany({'domain.id' : id}, {'domain.name' : domainDetail.url}, function(err) {
-                                if(err) reject(err);
-                                ProductModel.updateMany({'domain.id' : id}, {'domain.name' : domainDetail.url}, function(err) {
-                                    if(err) reject(err);
+                        if (old_url !== domainDetail.url) {
+                            StoreModel.updateMany({ 'domain.id': id }, { 'domain.name': domainDetail.url }, function (err) {
+                                if (err) reject(err);
+                                ProductModel.updateMany({ 'domain.id': id }, { 'domain.name': domainDetail.url }, function (err) {
+                                    if (err) reject(err);
+                                    PostModel.updateMany({ 'domain.id': id }, { 'domain.name': domainDetail.url }, function (err) {
+                                        if (err) reject(err);
+                                    })
                                 })
                             })
                         }

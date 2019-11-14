@@ -19,7 +19,7 @@ var postSchema = mongoose.Schema({
     },
     author: {
         id: mongoose.Schema.Types.ObjectId,
-        name: String
+        username: String
     },
     created_date: {
         type: Date,

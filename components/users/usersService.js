@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const DomainModel = require('../domain/domainModel')
 const StoreModel = require('../stores/storesModel')
 const ProductModel = require('../products/productsModel')
+const PostModel = require('../post/postModel')
 const rimraf = require('rimraf')
 
 exports.getAllUsers = function () {
@@ -32,7 +33,7 @@ exports.addUser = function (userDetail) {
     user.parent = userDetail.parent;
     //user.password = userDetail.password;
     user.isDeactivated = userDetail.isDeactivated ? userDetail.isDeactivated : false;
-    
+
     return new Promise(function (resolve, reject) {
         bcrypt.hash(userDetail.password, Math.ceil(Math.random() * 14), (err, hash) => {
             user.password = hash;
@@ -45,7 +46,7 @@ exports.addUser = function (userDetail) {
             });
 
         })
-       
+
     })
 
 
@@ -54,9 +55,9 @@ exports.addUser = function (userDetail) {
 exports.removeUser = function (id) {
 
     return new Promise(function (resolve, reject) {
-        UserModel.findById(id, function(err, user) {
-            if(user.parent.name === undefined){
-              deleteUserData(id);
+        UserModel.findById(id, function (err, user) {
+            if (user.parent.name === undefined) {
+                deleteUserData(id);
             }
         })
         UserModel.deleteOne({
@@ -93,7 +94,7 @@ exports.findUser = function (id) {
 exports.deactivateUser = function (id) {
 
     return new Promise(function (resolve, reject) {
-        UserModel.findByIdAndUpdate(id, {isDeactivated : true}, function (err, user) {
+        UserModel.findByIdAndUpdate(id, { isDeactivated: true }, function (err, user) {
             if (user) {
                 resolve(user);
             } else {
@@ -122,18 +123,20 @@ exports.updateUser = function (id, userDetail) {
                 user.phone = userDetail.phone;
                 user.role = userDetail.role;
                 user.parent = userDetail.parent;
-               // user.password = userDetail.password;
                 user.isDeactivated = userDetail.isDeactivated;
                 user.updated_date = Date.now();
-                
+
 
                 bcrypt.hash(userDetail.password, Math.ceil(Math.random() * 14), (err, hash) => {
                     user.password = hash;
                     user.save(function (err) {
                         if (!err) {
-                            if(old_username !== userDetail.username) {
-                                DomainModel.updateMany({'user.id' : id}, {'user.username' : userDetail.username}, function(err) {
-                                    if(err) reject(err);
+                            if (old_username !== userDetail.username) {
+                                DomainModel.updateMany({ 'user.id': id }, { 'user.username': userDetail.username }, function (err) {
+                                    if (err) reject(err);
+                                    PostModel.updateMany({ 'author.id': id }, { 'author.username': userDetail.username }, function (err) {
+                                        if (err) reject(err);
+                                    })
                                 })
                             }
                             resolve(user);
@@ -141,7 +144,7 @@ exports.updateUser = function (id, userDetail) {
                             reject(err);
                         }
                     });
-        
+
                 })
             }
 
@@ -150,23 +153,24 @@ exports.updateUser = function (id, userDetail) {
     });
 }
 
-function deleteUserData(id){
-    DomainModel.find({'user.id' : id}, function(err, domains){
-        if(!err) {
+function deleteUserData(id) {
+    DomainModel.find({ 'user.id': id }, function (err, domains) {
+        if (!err) {
             domains.forEach(domain => {
-                rimraf(`./static/images/${domain._id}`, function(){
-                    ProductModel.deleteMany({'domain.id' : domain._id}, function(err){
-                        StoreModel.deleteMany({'domain.id' : domain._id}, function(err){
-                            DomainModel.deleteOne({
-                                _id : domain._id
-                            }, function(err) {
-                                console.log(domain.url + " deleted successfully...");
+                rimraf(`./static/images/${domain._id}`, function () {
+                    ProductModel.deleteMany({ 'domain.id': domain._id }, function (err) {
+                        StoreModel.deleteMany({ 'domain.id': domain._id }, function (err) {
+                            PostModel.deleteMany({ 'domain.id': domain._id }, function (err) {
+                                DomainModel.deleteOne({
+                                    _id: domain._id
+                                }, function (err) {
+                                    console.log(domain.url + " deleted successfully...");
+                                })
                             })
                         })
                     })
-                    
                 })
-               
+
             });
         }
     })
