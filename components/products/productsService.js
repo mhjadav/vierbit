@@ -1,8 +1,10 @@
 let ProductModel = require('./productsModel');
 var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
-var fs = require('fs');
-const logger = require('../../logger');
+const TagModel = require('../tags/tagsModel')
+const _ = require('lodash')
+const logger = require('../../logger')
+const ignoreKeywords = require('../validation/ignoreKewords')
 
 exports.getAllProducts = function () {
 
@@ -15,8 +17,6 @@ exports.getAllProducts = function () {
             }
         });
     })
-
-
 }
 
 exports.addProduct = function (productDetail, files) {
@@ -35,23 +35,23 @@ exports.addProduct = function (productDetail, files) {
 
     return new Promise(function (resolve, reject) {
         product.save(function (err, newproduct) {
-
             if (!err) {
-               
                 let dir = `./static/images/${newproduct.domain.id}/${newproduct.store.id}/products/${newproduct._id}`;
                 mkdirp(dir, function (err) {
                     if (err) {
                         reject(err)
                     }
                 });
+
+                addTags(product.tags, product.name.split(' '));
                 resolve(product);
+               
+
             } else {
                 reject(err);
             }
         });
     })
-
-
 }
 
 exports.removeProduct = function (id) {
@@ -71,14 +71,10 @@ exports.removeProduct = function (id) {
                 });
             })
         })
-
     })
-
-
 }
 
 exports.findProduct = function (id) {
-
     return new Promise(function (resolve, reject) {
         ProductModel.findById(id, function (err, product) {
             if (product) {
@@ -88,8 +84,6 @@ exports.findProduct = function (id) {
             }
         });
     });
-
-
 }
 
 exports.deactivateProduct = function (id) {
@@ -103,8 +97,6 @@ exports.deactivateProduct = function (id) {
             }
         });
     });
-
-
 }
 
 exports.updateProduct = function (id, productDetail, files) {
@@ -116,6 +108,7 @@ exports.updateProduct = function (id, productDetail, files) {
                 reject(err);
             } else {
 
+                let old_tags = product.tags;
                 let old_name = product.name;
                 product.name = productDetail.name;
                 product.domain = productDetail.domain;
@@ -132,14 +125,53 @@ exports.updateProduct = function (id, productDetail, files) {
                 product.save(function (err) {
                     if (!err) {
                         resolve(product);
+                        if(old_tags !== productDetail.tags || old_name !== productDetail.name) {
+                            addTags(product.tags, product.name.split(' '));
+                        }
                     } else {
                         reject(err);
                     }
                 });
-
-
             }
         });
 
+    });
+}
+
+function addTags(tags, keywords) {
+   // let newkeywords = ['electronics', 'new-final', 'new-final2'];
+   let newkeywords =  _.difference(keywords, ignoreKeywords.unusedKeywords);
+   console.log("filtered keywords : " + newkeywords);
+    let isObjUpdated = false;
+    TagModel.get(function (err, oldtags) {
+        tags.forEach(tag => {
+            let obj = _.find(oldtags, { "name": tag })
+            if (obj) {
+                isObjUpdated = false
+                _.forEach(newkeywords, function (value) {
+                    if (obj.keywords.indexOf(value) < 0) {
+                        obj.keywords.push(value);
+                        isObjUpdated = true;
+                    }
+                })
+                if (isObjUpdated) {
+                    TagModel.updateOne({ "_id": obj._id }, { "keywords": obj.keywords }, function (err) {
+                        if (err) logger.error(err);
+                    });
+                }
+            } else {
+                createNewTag(tag, newkeywords);
+            }
+        });
+    })
+
+}
+
+function createNewTag(tag, keywords) {
+    let obj = new TagModel();
+    obj.name = tag;
+    obj.keywords = keywords;
+    obj.save(function (err, obj) {
+        if (err) logger.error(err);
     });
 }
